@@ -258,6 +258,7 @@
       e.preventDefault();
       const email = document.getElementById("email").value;
       const msg = document.getElementById("message").value;
+      const result = document.getElementById("formResult");
       // validation checks
       if (!email) {
         result.innerText = "Email cannot be empty.";
@@ -267,7 +268,7 @@
         result.innerText = "Password cannot be empty.";
         return;
       }
-      document.getElementById("formResult").innerText =
+      result.innerText =
         `Submitted: ${email} - ${msg}`;
     });
 
