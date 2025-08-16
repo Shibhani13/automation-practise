@@ -4,80 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Locator Playground</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 2rem;
-    }
-
-    section {
-      margin-bottom: 2rem;
-      padding: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    h2 {
-      margin-top: 0;
-    }
-
-    button {
-      margin: 0.5rem 0;
-    }
-
-    table,
-    th,
-    td {
-      border: 1px solid black;
-      border-collapse: collapse;
-      padding: 8px;
-    }
-
-    table {
-      width: 100%;
-      margin-top: 10px;
-    }
-
-    ul {
-      margin-top: 10px;
-    }
-
-    .range-slider-container {
-      width: 80%;
-      max-width: 400px;
-      margin: 50px auto;
-      text-align: center;
-      font-family: Arial, sans-serif;
-    }
-
-    input[type=range] {
-      appearance: none;
-      width: 100%;
-      height: 12px;
-      border-radius: 6px;
-      background: #ddd;
-      outline: none;
-    }
-
-    input[type=range]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: #4CAF50;
-      cursor: pointer;
-      box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-    }
-
-    input[type=range]::-moz-range-thumb {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: #4CAF50;
-      cursor: pointer;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -224,6 +151,13 @@
     <input type="range" id="volume" name="volume" min="0" max="100" value="50">
   </section>
 
+  <div id="progress-container" class="progress-container">
+    <div id="progress-bar" class="progress-bar">
+      <span id="progress-text" class="progress-text">0%</span>
+    </div>
+  </div>
+  <button id="start-btn" class="start-btn">Start Progress</button>
+
   <!-- Open Shadow DOM -->
   <section>
     <h2>Open Shadow DOM</h2>
@@ -252,63 +186,7 @@
     <p id="formResult"></p>
   </section>
 
-  <script>
-    // Form handling
-    document.getElementById("contactForm").addEventListener("submit", e => {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const msg = document.getElementById("message").value;
-      const result = document.getElementById("formResult");
-      // validation checks
-      if (!email) {
-        result.innerText = "Email cannot be empty.";
-        return;
-      }
-      if (!msg) {
-        result.innerText = "Password cannot be empty.";
-        return;
-      }
-      result.innerText =
-        `Submitted: ${email} - ${msg}`;
-    });
-
-    const slider = document.getElementById('volume');
-    const output = document.getElementById('volume-value');
-
-    slider.addEventListener('input', () => {
-      output.textContent = slider.value;
-    });
-
-    // Open Shadow DOM
-    class OpenShadow extends HTMLElement {
-      constructor() {
-        super();
-        const shadow = this.attachShadow({ mode: "open" });
-        const wrapper = document.createElement("div");
-        wrapper.innerHTML = `
-          <p>Inside <b>open</b> shadow DOM</p>
-          <button id="shadowBtn">Shadow Button</button>
-        `;
-        shadow.appendChild(wrapper);
-      }
-    }
-    customElements.define("open-shadow", OpenShadow);
-
-    // Closed Shadow DOM
-    class ClosedShadow extends HTMLElement {
-      constructor() {
-        super();
-        const shadow = this.attachShadow({ mode: "closed" });
-        const wrapper = document.createElement("div");
-        wrapper.innerHTML = `
-          <p>Inside <b>closed</b> shadow DOM</p>
-          <button id="secretBtn">Secret Button</button>
-        `;
-        shadow.appendChild(wrapper);
-      }
-    }
-    customElements.define("closed-shadow", ClosedShadow);
-  </script>
+  <script src="script.js"></script>
 </body>
 
 </html>
