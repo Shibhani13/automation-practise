@@ -41,6 +41,42 @@
     ul {
       margin-top: 10px;
     }
+
+    .range-slider-container {
+      width: 80%;
+      max-width: 400px;
+      margin: 50px auto;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+
+    input[type=range] {
+      appearance: none;
+      width: 100%;
+      height: 12px;
+      border-radius: 6px;
+      background: #ddd;
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #4CAF50;
+      cursor: pointer;
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    }
+
+    input[type=range]::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #4CAF50;
+      cursor: pointer;
+    }
   </style>
 </head>
 
@@ -183,6 +219,11 @@
     </table>
   </section>
 
+  <section class="range-slider-container">
+    <label for="volume">Volume: <span id="volume-value">50</span>%</label>
+    <input type="range" id="volume" name="volume" min="0" max="100" value="50">
+  </section>
+
   <!-- Open Shadow DOM -->
   <section>
     <h2>Open Shadow DOM</h2>
@@ -222,13 +263,19 @@
         result.innerText = "Email cannot be empty.";
         return;
       }
-
       if (!password) {
         result.innerText = "Password cannot be empty.";
         return;
       }
       document.getElementById("formResult").innerText =
         `Submitted: ${email} - ${msg}`;
+    });
+
+    const slider = document.getElementById('volume');
+    const output = document.getElementById('volume-value');
+
+    slider.addEventListener('input', () => {
+      output.textContent = slider.value;
     });
 
     // Open Shadow DOM
