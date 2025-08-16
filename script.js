@@ -24,22 +24,6 @@ slider.addEventListener('input', () => {
   output.textContent = slider.value;
 });
 
-document.getElementById('start-btn').addEventListener('click', function () {
-  let progressBar = document.getElementById('progress-bar');
-  let progressText = document.getElementById('progress-text');
-  let width = 0;
-
-  let interval = setInterval(function () {
-    if (width >= 100) {
-      clearInterval(interval);
-    } else {
-      width++;
-      progressBar.style.width = width + '%';
-      progressText.textContent = width + '%';
-    }
-  }, 100);
-});
-
 // Open Shadow DOM
 class OpenShadow extends HTMLElement {
   constructor() {
@@ -69,3 +53,42 @@ class ClosedShadow extends HTMLElement {
   }
 }
 customElements.define("closed-shadow", ClosedShadow);
+
+let width = 0;
+let progressInterval = null;
+
+const progressBar = document.getElementById('progress-bar');
+const progressText = document.getElementById('progress-text');
+
+document.getElementById('start-btn').addEventListener('click', function() {
+  // Prevent multiple intervals
+  if (progressInterval) return;
+
+  progressInterval = setInterval(() => {
+    if (width >= 100) {
+      clearInterval(progressInterval);
+      progressInterval = null;
+    } else {
+      width++;
+      progressBar.style.width = width + '%';
+      progressText.textContent = width + '%';
+    }
+  }, 100);
+});
+
+document.getElementById('stop-btn').addEventListener('click', function() {
+  if (progressInterval) {
+    clearInterval(progressInterval);
+    progressInterval = null;
+  }
+});
+
+document.getElementById('reset-btn').addEventListener('click', function() {
+  if (progressInterval) {
+    clearInterval(progressInterval);
+    progressInterval = null;
+  }
+  width = 0;
+  progressBar.style.width = '0%';
+  progressText.textContent = '0%';
+});
