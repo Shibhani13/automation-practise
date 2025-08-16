@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Locator Playground</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    section { margin-bottom: 2rem; padding: 1rem; border: 1px solid #ccc; border-radius: 6px; }
+    h2 { margin-top: 0; }
+    button { margin: 0.5rem 0; }
+  </style>
+</head>
+<body>
+  <h1>Locator Playground</h1>
+
+  <!-- Basic Roles -->
+  <section>
+    <h2>Basic Roles</h2>
+    <button id="btn1">Click Me</button>
+    <input type="text" placeholder="Enter your name" aria-label="Name" />
+    <label for="agree">
+      <input type="checkbox" id="agree" /> I Agree
+    </label>
+    <select id="city">
+      <option value="ny">New York</option>
+      <option value="ldn">London</option>
+      <option value="blr">Bangalore</option>
+    </select>
+  </section>
+
+  <!-- By Text -->
+  <section>
+    <h2>Text Locators</h2>
+    <p>Welcome to the locator playground!</p>
+    <p>Click <a href="#about">here</a> to learn more.</p>
+  </section>
+
+  <!-- Open Shadow DOM -->
+  <section>
+    <h2>Open Shadow DOM</h2>
+    <open-shadow></open-shadow>
+  </section>
+
+  <!-- Closed Shadow DOM -->
+  <section>
+    <h2>Closed Shadow DOM</h2>
+    <closed-shadow></closed-shadow>
+    <p><i>Note: Playwright/WebDriver cannot access inside this one.</i></p>
+  </section>
+
+  <!-- Form -->
+  <section>
+    <h2>Form Example</h2>
+    <form id="contactForm">
+      <label>
+        Email: <input type="email" id="email" name="email" />
+      </label><br><br>
+      <label>
+        Message: <textarea id="message"></textarea>
+      </label><br><br>
+      <button type="submit">Submit</button>
+    </form>
+    <p id="formResult"></p>
+  </section>
+
+  <script>
+    // Form handling
+    document.getElementById("contactForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const msg = document.getElementById("message").value;
+      document.getElementById("formResult").innerText =
+        `Submitted: ${email} - ${msg}`;
+    });
+
+    // Open Shadow DOM
+    class OpenShadow extends HTMLElement {
+      constructor() {
+        super();
+        const shadow = this.attachShadow({ mode: "open" });
+        const wrapper = document.createElement("div");
+        wrapper.innerHTML = `
+          <p>Inside <b>open</b> shadow DOM</p>
+          <button id="shadowBtn">Shadow Button</button>
+        `;
+        shadow.appendChild(wrapper);
+      }
+    }
+    customElements.define("open-shadow", OpenShadow);
+
+    // Closed Shadow DOM
+    class ClosedShadow extends HTMLElement {
+      constructor() {
+        super();
+        const shadow = this.attachShadow({ mode: "closed" });
+        const wrapper = document.createElement("div");
+        wrapper.innerHTML = `
+          <p>Inside <b>closed</b> shadow DOM</p>
+          <button id="secretBtn">Secret Button</button>
+        `;
+        shadow.appendChild(wrapper);
+      }
+    }
+    customElements.define("closed-shadow", ClosedShadow);
+  </script>
+</body>
+</html>
