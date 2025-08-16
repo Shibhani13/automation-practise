@@ -25,9 +25,22 @@
       margin: 0.5rem 0;
     }
 
-    table, th, td { border: 1px solid black; border-collapse: collapse; padding: 8px; }
-    table { width: 100%; margin-top: 10px; }
-    ul { margin-top: 10px; }
+    table,
+    th,
+    td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 8px;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    ul {
+      margin-top: 10px;
+    }
   </style>
 </head>
 
@@ -204,6 +217,16 @@
       e.preventDefault();
       const email = document.getElementById("email").value;
       const msg = document.getElementById("message").value;
+      // validation checks
+      if (!email) {
+        result.innerText = "Email cannot be empty.";
+        return;
+      }
+
+      if (!password) {
+        result.innerText = "Password cannot be empty.";
+        return;
+      }
       document.getElementById("formResult").innerText =
         `Submitted: ${email} - ${msg}`;
     });
