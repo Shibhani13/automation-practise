@@ -51,6 +51,68 @@ if (usernameInput) {
   });
 }
 
+// Initialize Flatpickr for DemoQA-style pickers (if flatpickr loaded)
+if (typeof flatpickr !== 'undefined') {
+  try {
+    // Date only
+    if (document.getElementById('date-only')) {
+      flatpickr('#date-only', { dateFormat: 'Y-m-d' });
+    }
+
+    // Date & time
+    if (document.getElementById('datetime-local')) {
+      flatpickr('#datetime-local', { enableTime: true, dateFormat: 'Y-m-d H:i', time_24hr: false });
+    }
+
+    // Time only
+    if (document.getElementById('time-only')) {
+      flatpickr('#time-only', { enableTime: true, noCalendar: true, dateFormat: 'H:i', time_24hr: false });
+    }
+
+    // Month + Year using monthSelect plugin
+    if (document.getElementById('month-year') && typeof monthSelectPlugin !== 'undefined') {
+      flatpickr('#month-year', {
+        plugins: [new monthSelectPlugin({ shorthand: false, dateFormat: 'Y-m', altFormat: 'F Y' })]
+      });
+    }
+
+    // Week picker: use native week input (already present) but enhance with flatpickr showing week numbers
+    if (document.getElementById('week-picker')) {
+      // flatpickr doesn't have a built-in week selector by default; we'll show week numbers for visual aid
+      flatpickr('#week-picker', { weekNumbers: true, dateFormat: 'Y-\W' });
+    }
+
+    // Replace native DOB handling with flatpickr to match DemoQA style (still enforce min/max)
+    if (document.getElementById('dob')) {
+      const today = new Date();
+      const maxStr = today.toISOString().slice(0, 10);
+      flatpickr('#dob', {
+        dateFormat: 'Y-m-d',
+        minDate: '1980-01-01',
+        maxDate: maxStr,
+        onChange: function(selectedDates, dateStr) {
+          const dobError = document.getElementById('dob-error');
+          if (!dateStr) {
+            if (dobError) dobError.textContent = '';
+            return;
+          }
+          if (dateStr < '1980-01-01') {
+            if (dobError) dobError.textContent = 'Date cannot be before Jan 1, 1980.';
+          } else if (dateStr > maxStr) {
+            if (dobError) dobError.textContent = 'Future dates are not allowed.';
+          } else if (dobError) {
+            dobError.textContent = '';
+          }
+          if (dobError) setTimeout(() => { dobError.textContent = ''; }, 2500);
+        }
+      });
+    }
+  } catch (err) {
+    // fail silently if plugin not available
+    console.warn('Flatpickr init error:', err);
+  }
+}
+
 // Date of Birth: enforce min (1980-01-01) and max (today) and clamp on input
 const dobInput = document.getElementById('dob');
 if (dobInput) {
