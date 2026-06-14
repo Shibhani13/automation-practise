@@ -24,6 +24,32 @@ slider.addEventListener('input', () => {
   output.textContent = slider.value;
 });
 
+// Enforce username max length (25 chars) and trim pasted values
+const usernameInput = document.getElementById('username');
+if (usernameInput) {
+  usernameInput.addEventListener('input', (e) => {
+    const el = e.target;
+    if (el.value.length > 25) el.value = el.value.slice(0, 25);
+  });
+}
+
+// Enforce age to be a positive whole number (1-100). Strip non-digits on input and clamp on blur.
+const ageInput = document.getElementById('age');
+if (ageInput) {
+  ageInput.addEventListener('input', (e) => {
+    // remove any non-digit characters (prevents decimals and negatives)
+    const clean = e.target.value.replace(/\D/g, '');
+    e.target.value = clean;
+  });
+
+  ageInput.addEventListener('blur', (e) => {
+    let v = parseInt(e.target.value, 10);
+    if (isNaN(v) || v < 1) v = 1;
+    if (v > 100) v = 100;
+    e.target.value = v;
+  });
+}
+
 // Open Shadow DOM
 class OpenShadow extends HTMLElement {
   constructor() {
