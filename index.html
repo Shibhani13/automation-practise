@@ -170,6 +170,29 @@
     <input type="range" id="volume" name="volume" min="0" max="100" value="50">
   </section>
 
+  <!-- Date Pickers -->
+  <section>
+    <h2>Date Pickers</h2>
+    <label for="date-only">Date only:</label>
+    <input type="date" id="date-only" name="date-only"><br><br>
+
+    <label for="datetime-local">Date &amp; Time:</label>
+    <input type="datetime-local" id="datetime-local" name="datetime-local"><br><br>
+
+    <label for="time-only">Time only:</label>
+    <input type="time" id="time-only" name="time-only"><br><br>
+
+    <label for="month-year">Month + Year:</label>
+    <input type="month" id="month-year" name="month-year"><br><br>
+
+    <label for="week-picker">Week picker:</label>
+    <input type="week" id="week-picker" name="week-picker"><br><br>
+
+    <label for="dob">DOB (min: Jan 1, 1980 — max: today):</label>
+    <input type="date" id="dob" name="dob">
+    <span id="dob-error" class="error" aria-live="polite" role="status"></span>
+  </section>
+
   <div id="progress-container" class="progress-container">
     <div id="progress-bar" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
       <span id="progress-text" class="progress-text">0%</span>

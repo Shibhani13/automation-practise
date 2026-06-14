@@ -51,6 +51,82 @@ if (usernameInput) {
   });
 }
 
+// Date of Birth: enforce min (1980-01-01) and max (today) and clamp on input
+const dobInput = document.getElementById('dob');
+if (dobInput) {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  const todayStr = `${yyyy}-${mm}-${dd}`;
+  const minStr = '1980-01-01';
+  dobInput.min = minStr;
+  dobInput.max = todayStr;
+
+  const dobError = document.getElementById('dob-error');
+
+  dobInput.addEventListener('input', (e) => {
+    const val = e.target.value;
+    if (!val) {
+      if (dobError) dobError.textContent = '';
+      return;
+    }
+    if (val < minStr) {
+      e.target.value = minStr;
+      if (dobError) {
+        dobError.textContent = 'Date cannot be before Jan 1, 1980.';
+        setTimeout(() => { dobError.textContent = ''; }, 3000);
+      }
+      return;
+    }
+    if (val > todayStr) {
+      e.target.value = todayStr;
+      if (dobError) {
+        dobError.textContent = 'Future dates are not allowed.';
+        setTimeout(() => { dobError.textContent = ''; }, 3000);
+      }
+      return;
+    }
+    if (dobError) dobError.textContent = '';
+  });
+
+  // sanitize pasted values into DOB
+  dobInput.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const paste = (e.clipboardData || window.clipboardData).getData('text') || '';
+    // Try to parse common date formats into yyyy-mm-dd
+    const parsed = new Date(paste);
+    if (isNaN(parsed.getTime())) {
+      if (dobError) {
+        dobError.textContent = 'Invalid date format.';
+        setTimeout(() => { dobError.textContent = ''; }, 2000);
+      }
+      return;
+    }
+    const pY = parsed.getFullYear();
+    const pM = String(parsed.getMonth() + 1).padStart(2, '0');
+    const pD = String(parsed.getDate()).padStart(2, '0');
+    const pStr = `${pY}-${pM}-${pD}`;
+    if (pStr < minStr) {
+      dobInput.value = minStr;
+      if (dobError) {
+        dobError.textContent = 'Date adjusted to minimum allowed.';
+        setTimeout(() => { dobError.textContent = ''; }, 2000);
+      }
+      return;
+    }
+    if (pStr > todayStr) {
+      dobInput.value = todayStr;
+      if (dobError) {
+        dobError.textContent = 'Future dates not allowed; set to today.';
+        setTimeout(() => { dobError.textContent = ''; }, 2000);
+      }
+      return;
+    }
+    dobInput.value = pStr;
+  });
+}
+
 // Enforce age to be a positive whole number (1-100). Strip non-digits on input and clamp on blur.
 const ageInput = document.getElementById('age');
 if (ageInput) {
