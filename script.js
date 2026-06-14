@@ -113,6 +113,143 @@ if (typeof flatpickr !== 'undefined') {
   }
 }
 
+// Generic helper to show temporary inline errors
+function showTempError(id, msg, timeout = 3000) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  clearTimeout(el._errTimer);
+  el._errTimer = setTimeout(() => { el.textContent = ''; }, timeout);
+}
+
+// Validation helpers for various date/time inputs
+// Date-only (YYYY-MM-DD)
+const dateOnly = document.getElementById('date-only');
+if (dateOnly) {
+  dateOnly.addEventListener('beforeinput', (e) => {
+    if (e.data && /[^0-9-]/.test(e.data)) {
+      e.preventDefault();
+      showTempError('date-only-error', 'Only digits and - allowed');
+    }
+  });
+  dateOnly.addEventListener('blur', (e) => {
+    const v = e.target.value;
+    if (!v) return;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v) || isNaN(new Date(v).getTime())) {
+      showTempError('date-only-error', 'Invalid date (use YYYY-MM-DD)');
+    }
+  });
+  dateOnly.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const paste = (e.clipboardData || window.clipboardData).getData('text') || '';
+    const cleaned = paste.replace(/[^0-9-]/g, '').slice(0, 10);
+    e.target.value = cleaned;
+    e.target.dispatchEvent(new Event('blur'));
+  });
+}
+
+// Date & time
+const dateTime = document.getElementById('datetime-local');
+if (dateTime) {
+  dateTime.addEventListener('beforeinput', (e) => {
+    if (e.data && /[^0-9Tt:\-\s]/.test(e.data)) {
+      e.preventDefault();
+      showTempError('datetime-local-error', 'Invalid character for date/time');
+    }
+  });
+  dateTime.addEventListener('blur', (e) => {
+    let v = e.target.value;
+    if (!v) return;
+    // normalize space to T for parsing
+    v = v.replace(' ', 'T');
+    if (isNaN(Date.parse(v))) {
+      showTempError('datetime-local-error', 'Invalid date & time');
+    }
+  });
+  dateTime.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const paste = (e.clipboardData || window.clipboardData).getData('text') || '';
+    const candidate = paste.replace(/[^0-9Tt:\-\s]/g, '').slice(0, 16);
+    e.target.value = candidate;
+    e.target.dispatchEvent(new Event('blur'));
+  });
+}
+
+// Time only HH:MM
+const timeOnly = document.getElementById('time-only');
+if (timeOnly) {
+  timeOnly.addEventListener('beforeinput', (e) => {
+    if (e.data && /[^0-9:]/.test(e.data)) {
+      e.preventDefault();
+      showTempError('time-only-error', 'Only digits and : allowed');
+    }
+  });
+  timeOnly.addEventListener('blur', (e) => {
+    const v = e.target.value;
+    if (!v) return;
+    if (!/^(?:[01]?\d|2[0-3]):[0-5]\d$/.test(v)) {
+      showTempError('time-only-error', 'Invalid time (HH:MM 00:00-23:59)');
+    }
+  });
+  timeOnly.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const paste = (e.clipboardData || window.clipboardData).getData('text') || '';
+    const cleaned = paste.replace(/[^0-9:]/g, '').slice(0,5);
+    e.target.value = cleaned;
+    e.target.dispatchEvent(new Event('blur'));
+  });
+}
+
+// Month + year YYYY-MM
+const monthYear = document.getElementById('month-year');
+if (monthYear) {
+  monthYear.addEventListener('beforeinput', (e) => {
+    if (e.data && /[^0-9-]/.test(e.data)) {
+      e.preventDefault();
+      showTempError('month-year-error', 'Only digits and - allowed');
+    }
+  });
+  monthYear.addEventListener('blur', (e) => {
+    const v = e.target.value;
+    if (!v) return;
+    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(v)) {
+      showTempError('month-year-error', 'Invalid month (use YYYY-MM)');
+    }
+  });
+  monthYear.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const paste = (e.clipboardData || window.clipboardData).getData('text') || '';
+    const cleaned = paste.replace(/[^0-9-]/g, '').slice(0,7);
+    e.target.value = cleaned;
+    e.target.dispatchEvent(new Event('blur'));
+  });
+}
+
+// Week picker YYYY-Www
+const weekPicker = document.getElementById('week-picker');
+if (weekPicker) {
+  weekPicker.addEventListener('beforeinput', (e) => {
+    if (e.data && /[^0-9Ww-]/.test(e.data)) {
+      e.preventDefault();
+      showTempError('week-picker-error', 'Only digits, W and - allowed');
+    }
+  });
+  weekPicker.addEventListener('blur', (e) => {
+    const v = e.target.value;
+    if (!v) return;
+    if (!/^\d{4}-W(0[1-9]|[1-4]\d|5[0-3])$/.test(v)) {
+      showTempError('week-picker-error', 'Invalid week (use YYYY-Www)');
+    }
+  });
+  weekPicker.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const paste = (e.clipboardData || window.clipboardData).getData('text') || '';
+    const cleaned = paste.replace(/[^0-9Ww-]/g, '').slice(0,8);
+    e.target.value = cleaned;
+    e.target.dispatchEvent(new Event('blur'));
+  });
+}
+
 // Date of Birth: enforce min (1980-01-01) and max (today) and clamp on input
 const dobInput = document.getElementById('dob');
 if (dobInput) {
