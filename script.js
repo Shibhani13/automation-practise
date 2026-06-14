@@ -77,10 +77,68 @@ if (ageInput) {
     }
   });
 
+  // Prevent non-digit insertions (handles composition/IME and some mobile cases)
+  ageInput.addEventListener('beforeinput', (e) => {
+    // If data is provided (normal typing), block non-digits
+    if (e.data && /\D/.test(e.data)) {
+      e.preventDefault();
+      if (ageError) {
+        ageError.textContent = 'Only whole positive numbers allowed.';
+        setTimeout(() => { ageError.textContent = ''; }, 2000);
+      }
+    }
+  });
+
+  // Handle paste explicitly: sanitize pasted content
+  ageInput.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const paste = (e.clipboardData || window.clipboardData).getData('text') || '';
+    const cleaned = paste.replace(/\D/g, '');
+    // If nothing numeric in paste, show error
+    if (!cleaned) {
+      if (ageError) {
+        ageError.textContent = 'Pasted content must contain digits only.';
+        setTimeout(() => { ageError.textContent = ''; }, 2000);
+      }
+      return;
+    }
+    // Append cleaned digits to current value, then clamp
+    const newVal = (ageInput.value + cleaned).replace(/\D/g, '');
+    let v = parseInt(newVal, 10);
+    if (isNaN(v)) v = '';
+    if (v > 100) v = 100;
+    ageInput.value = v;
+  });
   ageInput.addEventListener('input', (e) => {
-    // remove any non-digit characters (prevents decimals and negatives)
-    const clean = e.target.value.replace(/\D/g, '');
-    e.target.value = clean;
+    // sanitize input: remove non-digits, parse, clamp to 1-100 and show errors immediately
+    const raw = e.target.value || '';
+    const clean = raw.replace(/\D/g, '');
+    if (clean === '') {
+      e.target.value = '';
+      return;
+    }
+    let v = parseInt(clean, 10);
+    if (isNaN(v)) {
+      e.target.value = '';
+      return;
+    }
+    if (v < 1) {
+      e.target.value = '';
+      if (ageError) {
+        ageError.textContent = 'Age must be at least 1.';
+        setTimeout(() => { ageError.textContent = ''; }, 2000);
+      }
+      return;
+    }
+    if (v > 100) {
+      e.target.value = '100';
+      if (ageError) {
+        ageError.textContent = 'Maximum age is 100.';
+        setTimeout(() => { ageError.textContent = ''; }, 2000);
+      }
+      return;
+    }
+    e.target.value = String(v);
   });
 
   ageInput.addEventListener('blur', (e) => {
