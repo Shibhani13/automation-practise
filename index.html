@@ -49,13 +49,16 @@
   <section>
     <h2>Text & Number Input</h2>
     <label for="username">Username:</label>
-    <input type="text" id="username" name="username" placeholder="Enter username" maxlength="25"><br><br>
+    <input type="text" id="username" name="username" placeholder="Enter username" maxlength="25"><br>
+    <span id="username-error" class="error" aria-live="polite" role="status"></span>
+    <br>
 
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" placeholder="Enter password"><br><br>
 
     <label for="age">Age (number):</label>
-    <input type="number" id="age" name="age" min="1" max="100" value="25">
+    <input type="number" inputmode="numeric" id="age" name="age" min="1" max="100" step="1" value="25">
+    <span id="age-error" class="error" aria-live="polite" role="status"></span>
   </section>
 
   <!-- Radio buttons -->

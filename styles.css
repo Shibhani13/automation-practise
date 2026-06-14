@@ -112,3 +112,10 @@ input[type=range]::-moz-range-thumb {
 .start-btn:hover {
   background-color: #45a049;
 }
+
+/* Error message styling */
+.error {
+  color: #c00;
+  font-size: 0.9rem;
+  margin-left: 8px;
+}
