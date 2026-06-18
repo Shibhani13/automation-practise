@@ -51,42 +51,6 @@ if (usernameInput) {
   });
 }
 
-unction closeAllOpenFlatpickrs() {
-  document.querySelectorAll('input.flatpickr-input').forEach((el) => {
-    if (el && el._flatpickr && el._flatpickr.isOpen) {
-      el._flatpickr.close();
-    }
-  });
-}
-
-function attachGlobalCloseHandlersOnce() {
-  if (window.__fpCloseHandlersAttached) return;
-  window.__fpCloseHandlersAttached = true;
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeAllOpenFlatpickrs();
-  });
-
-  document.addEventListener('pointerdown', (e) => {
-    const target = e.target;
-    const clickedInsideCalendar = target.closest && target.closest('.flatpickr-calendar');
-    const clickedFlatpickrInput = target.closest && target.closest('input.flatpickr-input');
-    if (!clickedInsideCalendar && !clickedFlatpickrInput) {
-      closeAllOpenFlatpickrs();
-    }
-  }, true);
-}
-
-function wireAutoCloseOnComplete(fp, mode) {
-  const v = (fp.input.value || '').trim();
-  const completeTime = /^\d{2}:\d{2}$/.test(v);
-  const completeDateTime = /^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}$/.test(v);
-
-  if ((mode === 'time' && completeTime) || (mode === 'datetime' && completeDateTime)) {
-    setTimeout(() => fp.close(), 0);
-  }
-}
-
 // Initialize Flatpickr for DemoQA-style pickers (if flatpickr loaded)
 if (typeof flatpickr !== 'undefined') {
   try {
@@ -97,12 +61,12 @@ if (typeof flatpickr !== 'undefined') {
 
     // Date & time
     if (document.getElementById('datetime-local')) {
-      flatpickr('#datetime-local', { enableTime: true, dateFormat: 'Y-m-d H:i', time_24hr: false, clickOpens: true, onValueUpdate: [(_, __, fp) => wireAutoCloseOnComplete(fp, 'datetime')] });
+      flatpickr('#datetime-local', { enableTime: true, dateFormat: 'Y-m-d H:i', time_24hr: false });
     }
 
     // Time only
     if (document.getElementById('time-only')) {
-      flatpickr('#time-only', { enableTime: true, noCalendar: true, dateFormat: 'H:i', time_24hr: false, clickOpens: true, onValueUpdate: [(_, __, fp) => wireAutoCloseOnComplete(fp, 'datetime')] });
+      flatpickr('#time-only', { enableTime: true, noCalendar: true, dateFormat: 'H:i', time_24hr: false });
     }
 
     // Month + Year using monthSelect plugin
