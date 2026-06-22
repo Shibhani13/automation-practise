@@ -500,3 +500,86 @@ document.getElementById('reset-btn').addEventListener('click', function() {
   progressBar.style.width = '0%';
   progressText.textContent = '0%';
 });
+
+// Practice Form Handling
+const practiceForm = document.getElementById('practiceForm');
+const successModal = document.getElementById('successModal');
+const closeModalBtn = document.getElementById('closeModal');
+
+if (practiceForm) {
+  practiceForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Collect form data
+    const formData = new FormData(practiceForm);
+    const data = Object.fromEntries(formData);
+    
+    // Collect hobbies as array (multiple values for same name)
+    const hobbies = [];
+    practiceForm.querySelectorAll('input[name="hobbies"]:checked').forEach(cb => {
+      hobbies.push(cb.value);
+    });
+    
+    // Get file name if picture uploaded
+    const pictureFile = document.getElementById('picture').files[0];
+    const pictureName = pictureFile ? pictureFile.name : '';
+    
+    // Format DOB
+    const dobInput = data.dob;
+    let dobFormatted = '';
+    if (dobInput) {
+      const dobDate = new Date(dobInput + 'T00:00:00');
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      dobFormatted = dobDate.toLocaleDateString('en-US', options).replace(/\\s/g, ' ');
+    }
+    
+    // Prepare result table data
+    const resultData = [
+      { label: 'Student Name', value: data.firstName + ' ' + data.lastName },
+      { label: 'Student Email', value: data.email },
+      { label: 'Gender', value: data.gender },
+      { label: 'Mobile', value: data.mobile },
+      { label: 'Date of Birth', value: dobFormatted },
+      { label: 'Subjects', value: data.subjects || '' },
+      { label: 'Hobbies', value: hobbies.join(', ') },
+      { label: 'Picture', value: pictureName },
+      { label: 'Address', value: data.address || '' },
+      { label: 'State and City', value: (data.state || '') + ' ' + (data.city || '') }
+    ];
+    
+    // Populate result table
+    const resultTableBody = document.getElementById('resultTableBody');
+    resultTableBody.innerHTML = '';
+    
+    // Add header row
+    const headerRow = document.createElement('tr');
+    headerRow.innerHTML = '<td style=\"font-weight: bold;\">Label</td><td style=\"font-weight: bold;\">Values</td>';
+    resultTableBody.appendChild(headerRow);
+    
+    // Add data rows
+    resultData.forEach(item => {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${item.label}</td><td>${item.value}</td>`;
+      resultTableBody.appendChild(row);
+    });
+    
+    // Show modal
+    successModal.classList.add('show');
+  });
+}
+
+// Close modal
+if (closeModalBtn) {
+  closeModalBtn.addEventListener('click', function() {
+    successModal.classList.remove('show');
+  });
+}
+
+// Close modal when clicking outside
+if (successModal) {
+  window.addEventListener('click', function(e) {
+    if (e.target === successModal) {
+      successModal.classList.remove('show');
+    }
+  });
+}

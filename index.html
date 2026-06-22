@@ -221,6 +221,127 @@
     <p><i>Note: Playwright/WebDriver cannot access inside this one.</i></p>
   </section>
 
+  <!-- Automation Practice Form -->
+  <section>
+    <h2>Student Registration Form</h2>
+    <form id="practiceForm" class="practice-form">
+      <!-- Name Fields -->
+      <div class="form-group form-row">
+        <div class="form-col">
+          <label for="firstName">First Name *</label>
+          <input type="text" id="firstName" name="firstName" placeholder="First Name" required>
+        </div>
+        <div class="form-col">
+          <label for="lastName">Last Name *</label>
+          <input type="text" id="lastName" name="lastName" placeholder="Last Name" required>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="practiceEmail">Email *</label>
+        <input type="email" id="practiceEmail" name="email" placeholder="name@example.com" required>
+      </div>
+
+      <!-- Gender -->
+      <div class="form-group">
+        <label>Gender *</label>
+        <div class="radio-group">
+          <label><input type="radio" name="gender" value="Male" required> Male</label>
+          <label><input type="radio" name="gender" value="Female"> Female</label>
+          <label><input type="radio" name="gender" value="Other"> Other</label>
+        </div>
+      </div>
+
+      <!-- Mobile Number -->
+      <div class="form-group">
+        <label for="practicePhone">Mobile(10 Digits) *</label>
+        <input type="tel" id="practicePhone" name="mobile" placeholder="Mobile Number" pattern="[0-9]{10}" maxlength="10" required>
+      </div>
+
+      <!-- Date of Birth -->
+      <div class="form-group">
+        <label for="practiceDOB">Date of Birth</label>
+        <input type="date" id="practiceDOB" name="dob">
+      </div>
+
+      <!-- Subjects -->
+      <div class="form-group">
+        <label for="subjects">Subjects</label>
+        <input type="text" id="subjects" name="subjects" placeholder="Enter subjects (comma separated)">
+      </div>
+
+      <!-- Hobbies -->
+      <div class="form-group">
+        <label>Hobbies</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="hobbies" value="Sports"> Sports</label>
+          <label><input type="checkbox" name="hobbies" value="Reading"> Reading</label>
+          <label><input type="checkbox" name="hobbies" value="Music"> Music</label>
+        </div>
+      </div>
+
+      <!-- Picture Upload -->
+      <div class="form-group">
+        <label for="picture">Picture</label>
+        <input type="file" id="picture" name="picture" accept="image/*">
+      </div>
+
+      <!-- Current Address -->
+      <div class="form-group">
+        <label for="address">Current Address</label>
+        <textarea id="address" name="address" rows="3" placeholder="Current Address"></textarea>
+      </div>
+
+      <!-- State and City -->
+      <div class="form-group form-row">
+        <div class="form-col">
+          <label for="state">State</label>
+          <select id="state" name="state">
+            <option value="">Select State</option>
+            <option value="California">California</option>
+            <option value="Texas">Texas</option>
+            <option value="Florida">Florida</option>
+            <option value="New York">New York</option>
+          </select>
+        </div>
+        <div class="form-col">
+          <label for="city">City</label>
+          <select id="city" name="city">
+            <option value="">Select City</option>
+            <option value="Los Angeles">Los Angeles</option>
+            <option value="Houston">Houston</option>
+            <option value="Miami">Miami</option>
+            <option value="New York City">New York City</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="form-group">
+        <button type="submit" class="submit-btn">Submit</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Thanks for submitting the form</h2>
+      </div>
+      <div class="modal-body">
+        <table class="result-table">
+          <tbody id="resultTableBody">
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="close-btn" id="closeModal">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Form -->
   <section>
     <h2>Form Example</h2>
