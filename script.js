@@ -506,6 +506,99 @@ const practiceForm = document.getElementById('practiceForm');
 const successModal = document.getElementById('successModal');
 const closeModalBtn = document.getElementById('closeModal');
 
+// Multi-select for Subjects
+const subjectsList = ['English', 'Math', 'Science', 'History', 'Geography', 'Physics', 'Chemistry', 'Biology', 'Computer Science', 'Economics', 'Arts', 'Social Studies'];
+let selectedSubjects = [];
+
+const subjectsInput = document.getElementById('subjectsInput');
+const suggestionsListEl = document.getElementById('subjectsList');
+const subjectsSelectedEl = document.getElementById('subjectsSelected');
+const subjectsHidden = document.getElementById('subjectsHidden');
+
+function renderSubjects() {
+  subjectsSelectedEl.innerHTML = selectedSubjects.map(subject => `
+    <div class="subject-tag">
+      <span>${subject}</span>
+      <button class="remove-btn" type="button" data-subject="${subject}">×</button>
+    </div>
+  `).join('');
+  
+  // Add event listeners to remove buttons
+  subjectsSelectedEl.querySelectorAll('.remove-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const subject = btn.dataset.subject;
+      selectedSubjects = selectedSubjects.filter(s => s !== subject);
+      renderSubjects();
+      updateSubjectsSuggestions();
+      updateSubjectsHidden();
+    });
+  });
+}
+
+function updateSubjectsSuggestions() {
+  const inputValue = subjectsInput.value.toLowerCase();
+  
+  if (!inputValue) {
+    suggestionsListEl.classList.remove('show');
+    return;
+  }
+  
+  const filtered = subjectsList.filter(subject => 
+    subject.toLowerCase().includes(inputValue) && !selectedSubjects.includes(subject)
+  );
+  
+  suggestionsListEl.innerHTML = filtered.map(subject => 
+    `<li data-subject="${subject}">${subject}</li>`
+  ).join('');
+  
+  if (filtered.length > 0) {
+    suggestionsListEl.classList.add('show');
+    suggestionsListEl.querySelectorAll('li').forEach(li => {
+      li.addEventListener('click', () => {
+        const subject = li.dataset.subject;
+        if (!selectedSubjects.includes(subject)) {
+          selectedSubjects.push(subject);
+        }
+        renderSubjects();
+        subjectsInput.value = '';
+        updateSubjectsSuggestions();
+        updateSubjectsHidden();
+        subjectsInput.focus();
+      });
+    });
+  } else {
+    suggestionsListEl.classList.remove('show');
+  }
+}
+
+function updateSubjectsHidden() {
+  subjectsHidden.value = selectedSubjects.join(', ');
+}
+
+if (subjectsInput) {
+  subjectsInput.addEventListener('input', updateSubjectsSuggestions);
+  
+  subjectsInput.addEventListener('blur', () => {
+    setTimeout(() => {
+      suggestionsListEl.classList.remove('show');
+    }, 200);
+  });
+  
+  subjectsInput.addEventListener('focus', () => {
+    if (subjectsInput.value) {
+      updateSubjectsSuggestions();
+    }
+  });
+}
+
+// Close suggestions when clicking outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.multi-select-container')) {
+    suggestionsListEl.classList.remove('show');
+  }
+});
+
 if (practiceForm) {
   practiceForm.addEventListener('submit', function(e) {
     e.preventDefault();
@@ -540,7 +633,7 @@ if (practiceForm) {
       { label: 'Gender', value: data.gender },
       { label: 'Mobile', value: data.mobile },
       { label: 'Date of Birth', value: dobFormatted },
-      { label: 'Subjects', value: data.subjects || '' },
+      { label: 'Subjects', value: selectedSubjects.join(', ') },
       { label: 'Hobbies', value: hobbies.join(', ') },
       { label: 'Picture', value: pictureName },
       { label: 'Address', value: data.address || '' },

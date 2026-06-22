@@ -267,8 +267,13 @@
 
       <!-- Subjects -->
       <div class="form-group">
-        <label for="subjects">Subjects</label>
-        <input type="text" id="subjects" name="subjects" placeholder="Enter subjects (comma separated)">
+        <label>Subjects</label>
+        <div class="multi-select-container">
+          <div id="subjectsSelected" class="selected-items"></div>
+          <input type="text" id="subjectsInput" placeholder="Type subject name" autocomplete="off">
+          <ul id="subjectsList" class="suggestions-list"></ul>
+        </div>
+        <input type="hidden" id="subjectsHidden" name="subjects">
       </div>
 
       <!-- Hobbies -->
