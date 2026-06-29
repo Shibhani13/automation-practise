@@ -52,8 +52,53 @@ h2 {
   margin-top: 0;
 }
 
+.frame-demo {
+  margin: 1rem 0 1.25rem;
+}
+
+.frame-demo iframe {
+  width: 100%;
+  min-height: 220px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: white;
+}
+
+.demo-status {
+  margin-top: 0.8rem;
+  font-weight: 600;
+  color: #166534;
+}
+
+.demo-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.demo-modal-content {
+  background: white;
+  padding: 1.25rem;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
 button {
   margin: 0.5rem 0;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #1d4ed8;
 }
 
 table,

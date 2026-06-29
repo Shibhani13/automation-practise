@@ -156,6 +156,98 @@ document.querySelectorAll('.api-link').forEach(link => {
   });
 });
 
+function attachFrameWhenReady(frameElement, callback) {
+  if (!frameElement) return;
+
+  const tryAttach = () => {
+    try {
+      callback();
+    } catch (error) {
+      console.warn('Iframe interaction setup failed:', error);
+    }
+  };
+
+  if (frameElement.contentDocument && frameElement.contentDocument.readyState === 'complete') {
+    tryAttach();
+  } else {
+    frameElement.addEventListener('load', tryAttach, { once: true });
+  }
+}
+
+function attachIframeActions(frameElement, buttonId, messageId, successText) {
+  if (!frameElement) return;
+
+  attachFrameWhenReady(frameElement, () => {
+    const frameDoc = frameElement.contentDocument || frameElement.contentWindow.document;
+    const button = frameDoc.getElementById(buttonId);
+    const message = frameDoc.getElementById(messageId);
+
+    if (button && message) {
+      button.addEventListener('click', () => {
+        message.textContent = successText;
+        button.textContent = 'Clicked';
+      });
+    }
+  });
+}
+
+const frame = document.getElementById('single-frame');
+attachIframeActions(frame, 'iframe-btn', 'iframe-message', 'Iframe button clicked successfully!');
+
+const outerFrame = document.getElementById('outer-frame');
+attachIframeActions(outerFrame, 'outer-frame-btn', 'outer-frame-message', 'Outer frame button clicked!');
+
+if (outerFrame) {
+  attachFrameWhenReady(outerFrame, () => {
+    const outerDoc = outerFrame.contentDocument || outerFrame.contentWindow.document;
+    const innerFrameEl = outerDoc.getElementById('inner-frame');
+    if (!innerFrameEl) return;
+
+    attachFrameWhenReady(innerFrameEl, () => {
+      const innerDoc = innerFrameEl.contentDocument || innerFrameEl.contentWindow.document;
+      const button = innerDoc.getElementById('inner-frame-btn');
+      const message = innerDoc.getElementById('inner-frame-message');
+      const link = innerDoc.getElementById('inner-frame-link');
+      const image = innerDoc.getElementById('inner-frame-image');
+      const modalButton = innerDoc.getElementById('inner-frame-modal');
+
+      if (button && message) {
+        button.addEventListener('click', () => {
+          message.textContent = 'Inner frame button clicked!';
+          button.textContent = 'Clicked';
+        });
+      }
+
+      if (link && message) {
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          message.textContent = 'Inner frame link clicked!';
+        });
+      }
+
+      if (image && message) {
+        image.addEventListener('click', () => {
+          message.textContent = 'Inner frame image clicked!';
+        });
+      }
+
+      if (modalButton) {
+        modalButton.addEventListener('click', () => {
+          const modal = document.createElement('div');
+          modal.className = 'demo-modal';
+          modal.innerHTML = '<div class="demo-modal-content"><h3>Inner Frame Modal</h3><p>Opened from nested iframe.</p><button type="button" id="close-inner-modal">Close</button></div>';
+          document.body.appendChild(modal);
+          const closeButton = document.getElementById('close-inner-modal');
+          if (closeButton) {
+            closeButton.addEventListener('click', () => modal.remove());
+          }
+        });
+      }
+    });
+  });
+}
+
+
 // Enforce username max length (25 chars) and trim pasted values
 const usernameInput = document.getElementById('username');
 if (usernameInput) {
