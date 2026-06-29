@@ -20,8 +20,140 @@ document.getElementById("contactForm").addEventListener("submit", e => {
 const slider = document.getElementById('volume');
 const output = document.getElementById('volume-value');
 
-slider.addEventListener('input', () => {
-  output.textContent = slider.value;
+if (slider && output) {
+  slider.addEventListener('input', () => {
+    output.textContent = slider.value;
+  });
+}
+
+const mockResponses = {
+  'sample-post': {
+    status: 200,
+    statusText: 'OK',
+    body: { id: 1, title: 'Sample Post', body: 'This is a local mock response.' }
+  },
+  'sample-comment': {
+    status: 200,
+    statusText: 'OK',
+    body: { id: 1, postId: 1, name: 'Mock Comment', email: 'mock@example.com', body: 'Hello from local mock.' }
+  },
+  'sample-todo': {
+    status: 200,
+    statusText: 'OK',
+    body: { userId: 1, id: 1, title: 'Mock Todo', completed: false }
+  },
+  'status-400': {
+    status: 400,
+    statusText: 'Bad Request',
+    body: { error: 'The request was invalid.' }
+  },
+  'status-401': {
+    status: 401,
+    statusText: 'Unauthorized',
+    body: { error: 'Authentication is required.' }
+  },
+  'status-403': {
+    status: 403,
+    statusText: 'Forbidden',
+    body: { error: 'Access is forbidden.' }
+  },
+  'status-201': {
+    status: 201,
+    statusText: 'Created',
+    body: { message: 'Resource created successfully.' }
+  },
+  'status-404': {
+    status: 404,
+    statusText: 'Not Found',
+    body: { error: 'The resource was not found.' }
+  },
+  'status-204': {
+    status: 204,
+    statusText: 'No Content',
+    body: null
+  }
+};
+
+function createMockResponse(endpoint) {
+  const config = mockResponses[endpoint] || {
+    status: 404,
+    statusText: 'Not Found',
+    body: { error: 'Unknown endpoint.' }
+  };
+
+  return {
+    ok: config.status >= 200 && config.status < 300,
+    status: config.status,
+    statusText: config.statusText,
+    headers: {
+      get(name) {
+        return name === 'content-type' ? 'application/json' : null;
+      }
+    },
+    async text() {
+      return config.body === null ? '' : JSON.stringify(config.body);
+    }
+  };
+}
+
+document.querySelectorAll('.api-link').forEach(link => {
+  link.addEventListener('click', async (event) => {
+    event.preventDefault();
+    const endpoint = link.dataset.endpoint;
+    const statusEl = document.getElementById('api-link-status');
+    const responseEl = document.getElementById('api-link-response');
+
+    if (!endpoint || !statusEl || !responseEl) return;
+
+    statusEl.textContent = `Loading ${link.textContent.trim()}...`;
+    responseEl.textContent = '';
+
+    try {
+      const response = await new Promise((resolve) => {
+        setTimeout(() => resolve(createMockResponse(endpoint)), 150);
+      });
+      const statusText = response.statusText || 'Unknown status';
+      const contentType = response.headers.get('content-type') || '';
+
+      if (response.status === 204) {
+        responseEl.textContent = 'Response body: <empty>';
+        statusEl.textContent = `Status ${response.status} ${statusText}`;
+        return;
+      }
+
+      const rawBody = await response.text();
+      let parsedBody = rawBody;
+
+      if (rawBody) {
+        try {
+          parsedBody = JSON.parse(rawBody);
+        } catch (error) {
+          parsedBody = rawBody;
+        }
+      }
+
+      if (!response.ok) {
+        responseEl.textContent = JSON.stringify({
+          status: response.status,
+          statusText,
+          body: parsedBody
+        }, null, 2);
+        statusEl.textContent = `Request returned ${response.status} ${statusText}`;
+        return;
+      }
+
+      responseEl.textContent = JSON.stringify({
+        status: response.status,
+        statusText,
+        contentType,
+        body: parsedBody
+      }, null, 2);
+      statusEl.textContent = `Request completed for ${link.textContent.toLowerCase()}`;
+    } catch (error) {
+      statusEl.textContent = 'Request failed. Please try again.';
+      responseEl.textContent = `Error details: ${error.message}`;
+    }
+  });
 });
 
 // Enforce username max length (25 chars) and trim pasted values

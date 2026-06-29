@@ -10,6 +10,44 @@ section {
   border-radius: 6px;
 }
 
+.link-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+
+.link-list a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link-list a:hover {
+  text-decoration: underline;
+}
+
+.about-target {
+  margin-top: 0.75rem;
+  font-style: italic;
+  color: #555;
+}
+
+.api-link-status {
+  margin-top: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.api-link-response {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.75rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 h2 {
   margin-top: 0;
 }
