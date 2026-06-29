@@ -96,6 +96,20 @@ function createMockResponse(endpoint) {
   };
 }
 
+document.querySelectorAll('.accordion-header').forEach((button) => {
+  button.addEventListener('click', () => {
+    const item = button.closest('.accordion-item');
+    document.querySelectorAll('.accordion-item').forEach((entry) => {
+      if (entry !== item) {
+        entry.classList.remove('active');
+      }
+    });
+    if (item) {
+      item.classList.toggle('active');
+    }
+  });
+});
+
 document.querySelectorAll('.api-link').forEach(link => {
   link.addEventListener('click', async (event) => {
     event.preventDefault();
